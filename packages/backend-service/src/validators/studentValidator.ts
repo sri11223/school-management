@@ -94,8 +94,8 @@ export const validateStudent = (req: Request, res: Response, next: NextFunction)
   }
 
   // Numeric field validation
-  if (data.class_id !== undefined && (!Number.isInteger(data.class_id) || data.class_id < 1)) {
-    errors.push('Class ID must be a positive integer');
+  if (data.section_id !== undefined && (!Number.isInteger(data.section_id) || data.section_id < 1)) {
+    errors.push('Section ID must be a positive integer');
   }
 
   if (data.academic_year_id !== undefined && (!Number.isInteger(data.academic_year_id) || data.academic_year_id < 1)) {

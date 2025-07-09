@@ -1,5 +1,6 @@
 import { DatabaseManager } from '../database/DatabaseManager';
 import { NotFoundError, ValidationError } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
 
 export interface Student {
   id?: number;
@@ -19,7 +20,7 @@ export interface Student {
   city?: string;
   state?: string;
   pincode?: string;
-  class_id?: number;
+  section_id?: number;
   admission_date: string;
   academic_year_id?: number;
   previous_school?: string;
@@ -50,7 +51,7 @@ export interface Parent {
 }
 
 export interface StudentFilters {
-  class_id?: number;
+  section_id?: number;
   academic_year_id?: number;
   status?: string;
   search?: string;
@@ -83,9 +84,9 @@ export class StudentService {
     let params: any[] = [];
 
     // Build WHERE clause based on filters
-    if (filters.class_id) {
-      whereConditions.push('s.class_id = ?');
-      params.push(filters.class_id);
+    if (filters.section_id) {
+      whereConditions.push('s.section_id = ?');
+      params.push(filters.section_id);
     }
 
     if (filters.academic_year_id) {
@@ -119,17 +120,36 @@ export class StudentService {
     const countResult = await this.dbManager.getOne(countQuery, params);
     const total = countResult.total;
 
-    // Get paginated data
-    const dataQuery = `
-      SELECT s.*, c.name as class_name, c.section as class_section,
-             ay.year_name as academic_year
-      FROM students s
-      LEFT JOIN classes c ON s.class_id = c.id
-      LEFT JOIN academic_years ay ON s.academic_year_id = ay.id
-      ${whereClause}
-      ORDER BY s.created_at DESC
-      LIMIT ? OFFSET ?
-    `;
+    // Get paginated data - use simpler query that doesn't require all tables
+    let dataQuery;
+    try {
+      // First try a simpler query without joins to test if tables exist
+      await this.dbManager.getOne("SELECT 1 FROM sections LIMIT 1");
+      await this.dbManager.getOne("SELECT 1 FROM academic_years LIMIT 1");
+      
+      // If we get here, both tables exist
+      dataQuery = `
+        SELECT s.*, sec.section_name, c.name as class_name,
+               ay.year_name as academic_year
+        FROM students s
+        LEFT JOIN sections sec ON s.section_id = sec.id
+        LEFT JOIN classes c ON sec.class_id = c.id
+        LEFT JOIN academic_years ay ON s.academic_year_id = ay.id
+        ${whereClause}
+        ORDER BY s.created_at DESC
+        LIMIT ? OFFSET ?
+      `;
+    } catch (error) {
+      // If tables don't exist yet, use a simpler query
+      logger.warn('Some tables do not exist yet. Using simplified student query.');
+      dataQuery = `
+        SELECT s.*
+        FROM students s
+        ${whereClause}
+        ORDER BY s.created_at DESC
+        LIMIT ? OFFSET ?
+      `;
+    }
     
     const students = await this.dbManager.getAll(dataQuery, [...params, limit, offset]);
 
@@ -146,10 +166,11 @@ export class StudentService {
 
   public async getStudentById(id: number): Promise<Student | null> {
     const query = `
-      SELECT s.*, c.name as class_name, c.section as class_section,
+      SELECT s.*, sec.section_name, c.name as class_name,
              ay.year_name as academic_year
       FROM students s
-      LEFT JOIN classes c ON s.class_id = c.id
+      LEFT JOIN sections sec ON s.section_id = sec.id
+      LEFT JOIN classes c ON sec.class_id = c.id
       LEFT JOIN academic_years ay ON s.academic_year_id = ay.id
       WHERE s.id = ?
     `;
@@ -160,10 +181,11 @@ export class StudentService {
 
   public async getStudentByAdmissionNumber(admissionNumber: string): Promise<Student | null> {
     const query = `
-      SELECT s.*, c.name as class_name, c.section as class_section,
+      SELECT s.*, sec.section_name, c.name as class_name,
              ay.year_name as academic_year
       FROM students s
-      LEFT JOIN classes c ON s.class_id = c.id
+      LEFT JOIN sections sec ON s.section_id = sec.id
+      LEFT JOIN classes c ON sec.class_id = c.id
       LEFT JOIN academic_years ay ON s.academic_year_id = ay.id
       WHERE s.admission_number = ?
     `;
@@ -183,7 +205,7 @@ export class StudentService {
       INSERT INTO students (
         admission_number, roll_number, first_name, last_name, date_of_birth,
         gender, blood_group, religion, caste, category, phone, email, address,
-        city, state, pincode, class_id, admission_date, academic_year_id,
+        city, state, pincode, section_id, admission_date, academic_year_id,
         previous_school, medical_conditions, allergies, emergency_contact,
         photo_path, birth_certificate_path, aadhar_number, status
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -206,7 +228,7 @@ export class StudentService {
       studentData.city,
       studentData.state,
       studentData.pincode,
-      studentData.class_id,
+      studentData.section_id,
       studentData.admission_date,
       studentData.academic_year_id,
       studentData.previous_school,

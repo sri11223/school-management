@@ -1,0 +1,824 @@
+{
+	"info": {
+		"_postman_id": "edumanage-pro-api-collection",
+		"name": "EduManage Pro API Collection",
+		"description": "Complete API collection for EduManage Pro School Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "edumanage-pro"
+	},
+	"item": [
+		{
+			"name": "Health & System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health"]
+						}
+					}
+				},
+				{
+					"name": "General Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Students Management",
+			"item": [
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students?page=1&limit=10&status=Active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "Active"
+								},
+								{
+									"key": "section_id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "academic_year_id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Student by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Student by Admission Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/admission-number/2024001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "admission-number", "2024001"]
+						}
+					}
+				},
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"admission_number\": \"2024001\",\n  \"first_name\": \"Ravi\",\n  \"last_name\": \"Kumar\",\n  \"date_of_birth\": \"2010-05-15\",\n  \"gender\": \"Male\",\n  \"address\": \"Village Road, Rural Area\",\n  \"admission_date\": \"2024-04-01\",\n  \"academic_year_id\": 1,\n  \"category\": \"General\",\n  \"phone\": \"9876543210\",\n  \"email\": \"ravi.kumar@student.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/students",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students"]
+						}
+					}
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Ravi Updated\",\n  \"phone\": \"9876543211\",\n  \"email\": \"ravi.updated@student.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/students/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Student (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Student Parents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/students/1/parents",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "1", "parents"]
+						}
+					}
+				},
+				{
+					"name": "Add Student Parent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"relationship\": \"Father\",\n  \"name\": \"Suresh Kumar\",\n  \"phone\": \"9876543210\",\n  \"occupation\": \"Farmer\",\n  \"education\": \"High School\",\n  \"email\": \"suresh.kumar@parent.com\",\n  \"annual_income\": 50000,\n  \"is_primary_contact\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/students/1/parents",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "students", "1", "parents"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Teachers Management",
+			"item": [
+				{
+					"name": "Get All Teachers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/teachers",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "teachers"]
+						}
+					}
+				},
+				{
+					"name": "Get Teacher by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/teachers/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "teachers", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"teacher001\",\n  \"email\": \"teacher@school.com\",\n  \"password\": \"teacher123\",\n  \"first_name\": \"Priya\",\n  \"last_name\": \"Sharma\",\n  \"role\": \"Class Teacher\",\n  \"phone\": \"9876543210\",\n  \"employee_id\": \"EMP002\",\n  \"department\": \"Mathematics\",\n  \"subjects_taught\": [\"Mathematics\", \"Science\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/teachers",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "teachers"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Classes Management",
+			"item": [
+				{
+					"name": "Get All Classes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/classes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "classes"]
+						}
+					}
+				},
+				{
+					"name": "Get Class by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/classes/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "classes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Class",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Class 11\",\n  \"numeric_level\": 11,\n  \"academic_year_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/classes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "classes"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Attendance Management",
+			"item": [
+				{
+					"name": "Get Attendance Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance?date=2024-07-09&section_id=1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "attendance"],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-07-09"
+								},
+								{
+									"key": "section_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Attendance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"section_id\": 1,\n  \"date\": \"2024-07-09\",\n  \"attendance_records\": [\n    {\n      \"student_id\": 1,\n      \"status\": \"Present\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "attendance"]
+						}
+					}
+				},
+				{
+					"name": "Get Student Attendance Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/student/1/summary?month=7&year=2024",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "attendance", "student", "1", "summary"],
+							"query": [
+								{
+									"key": "month",
+									"value": "7"
+								},
+								{
+									"key": "year",
+									"value": "2024"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Exam Management",
+			"item": [
+				{
+					"name": "Get All Exams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/exams",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exams"]
+						}
+					}
+				},
+				{
+					"name": "Create Exam",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"First Unit Test\",\n  \"exam_type_id\": 1,\n  \"class_id\": 1,\n  \"academic_year_id\": 1,\n  \"start_date\": \"2024-08-01\",\n  \"end_date\": \"2024-08-05\",\n  \"instructions\": \"Please bring pen and calculator\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/exams",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exams"]
+						}
+					}
+				},
+				{
+					"name": "Get Exam Results",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/exams/1/results",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exams", "1", "results"]
+						}
+					}
+				},
+				{
+					"name": "Enter Student Marks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": 1,\n  \"exam_subject_id\": 1,\n  \"marks_obtained\": 85,\n  \"remarks\": \"Good performance\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/exams/marks",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exams", "marks"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Fee Management",
+			"item": [
+				{
+					"name": "Get Fee Structure",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fees/structure?class_id=1&academic_year_id=1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "fees", "structure"],
+							"query": [
+								{
+									"key": "class_id",
+									"value": "1"
+								},
+								{
+									"key": "academic_year_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Student Fee Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fees/student/1/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "fees", "student", "1", "status"]
+						}
+					}
+				},
+				{
+					"name": "Record Fee Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": 1,\n  \"fee_structure_id\": 1,\n  \"amount_paid\": 5000,\n  \"payment_mode\": \"Cash\",\n  \"transaction_id\": \"TXN123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fees/payment",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "fees", "payment"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "Get Dashboard Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/dashboard",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get Student Performance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/student/1/performance",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "student", "1", "performance"]
+						}
+					}
+				},
+				{
+					"name": "Get Class Performance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/class/1/performance",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "class", "1", "performance"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Features",
+			"item": [
+				{
+					"name": "Generate Study Materials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"topic\": \"Quadratic Equations\",\n  \"subject\": \"Mathematics\",\n  \"class_level\": 10,\n  \"material_type\": \"summary\",\n  \"language\": \"english\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/generate-study-material",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "ai", "generate-study-material"]
+						}
+					}
+				},
+				{
+					"name": "AI Tutoring Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": 1,\n  \"question\": \"How do I solve quadratic equations?\",\n  \"subject\": \"Mathematics\",\n  \"language\": \"english\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/tutoring",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "ai", "tutoring"]
+						}
+					}
+				},
+				{
+					"name": "Generate Learning Path",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": 1,\n  \"subject\": \"Mathematics\",\n  \"current_level\": \"Class 10\",\n  \"learning_goals\": \"Improve problem-solving skills\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ai/learning-path",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "ai", "learning-path"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "WhatsApp Integration",
+			"item": [
+				{
+					"name": "Send Individual Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"+919876543210\",\n  \"message\": \"Hello from EduManage Pro!\",\n  \"student_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/whatsapp/send",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "whatsapp", "send"]
+						}
+					}
+				},
+				{
+					"name": "Send Template Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"template_id\": 1,\n  \"student_id\": 1,\n  \"variables\": {\n    \"student_name\": \"Ravi Kumar\",\n    \"marks\": \"85\",\n    \"total_marks\": \"100\",\n    \"subject\": \"Mathematics\",\n    \"grade\": \"A\",\n    \"school_name\": \"Demo Rural School\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/whatsapp/send-template",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "whatsapp", "send-template"]
+						}
+					}
+				},
+				{
+					"name": "Get Message Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/whatsapp/status/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "whatsapp", "status", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "File Management",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "upload_type",
+									"value": "student_photo",
+									"type": "text"
+								},
+								{
+									"key": "related_table",
+									"value": "students",
+									"type": "text"
+								},
+								{
+									"key": "related_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/files/upload",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "files", "upload"]
+						}
+					}
+				},
+				{
+					"name": "Get File Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/files/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "files", "1"]
+						}
+					}
+				},
+				{
+					"name": "Download File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/files/1/download",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "files", "1", "download"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/profile",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "profile"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

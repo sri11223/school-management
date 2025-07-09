@@ -11,14 +11,14 @@ router.get('/', asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 10,
-    class_id,
+    section_id,
     academic_year_id,
     status = 'Active',
     search
   } = req.query;
 
   const filters = {
-    class_id: class_id ? parseInt(class_id as string) : undefined,
+    section_id: section_id ? parseInt(section_id as string) : undefined,
     academic_year_id: academic_year_id ? parseInt(academic_year_id as string) : undefined,
     status: status as string,
     search: search as string

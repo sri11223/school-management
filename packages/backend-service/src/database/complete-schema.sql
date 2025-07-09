@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS schools (
     language_preference TEXT DEFAULT 'english',
     whatsapp_number TEXT,
     ai_enabled BOOLEAN DEFAULT TRUE,
-    license_type TEXT CHECK(license_type IN ('Basic', 'Standard', 'Premium')),
+    license_type TEXT CHECK(license_type IN ('Basic', 'Standard', 'Premium', 'Free')),
     license_expiry DATE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -605,6 +605,8 @@ INSERT OR IGNORE INTO exam_types (name, name_telugu, weightage) VALUES
 ('Unit Test', 'యూనిట్ టెస్ట్', 0.2),
 ('Mid Term', 'మిడ్ టర్మ్', 0.3),
 ('Final Exam', 'ఫైనల్ పరీక్ష', 0.5);
+
+-- Subject insert statements are already included above
 
 -- Insert Fee Categories
 INSERT OR IGNORE INTO fee_categories (name, name_telugu, is_mandatory) VALUES 

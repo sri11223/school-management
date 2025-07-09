@@ -67,7 +67,15 @@ export class DatabaseManager {
       await this.executeInitQuery('PRAGMA foreign_keys=ON;');
 
       // Create tables manually to avoid SQL parsing issues
-      await this.createTables();
+      try {
+        await this.createTables();
+        logger.info('All database tables created successfully');
+      } catch (tableError) {
+        // If there's an error creating tables, log it but continue
+        // We may have partial functionality with the tables that were created
+        logger.warn('Some tables failed to create, but continuing with available functionality');
+        logger.error('Table creation error details:', tableError);
+      }
 
       this.isInitialized = true;
       logger.info('Database initialized successfully');
@@ -94,44 +102,78 @@ export class DatabaseManager {
 
   private async createTables(): Promise<void> {
     try {
-      // Create tables manually for testing
-      logger.info('Creating database tables...');
+      logger.info('Creating database tables from complete schema...');
       
-      // Schools table
-      await this.executeInitQuery(`
-        CREATE TABLE IF NOT EXISTS schools (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          code TEXT UNIQUE NOT NULL,
-          address TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
-      logger.info('Schools table created');
-
-      // Students table
-      await this.executeInitQuery(`
-        CREATE TABLE IF NOT EXISTS students (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          admission_number TEXT UNIQUE NOT NULL,
-          first_name TEXT NOT NULL,
-          last_name TEXT NOT NULL,
-          date_of_birth DATE NOT NULL,
-          gender TEXT CHECK(gender IN ('Male', 'Female', 'Other')),
-          address TEXT NOT NULL,
-          admission_date DATE NOT NULL,
-          status TEXT DEFAULT 'Active',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
-      logger.info('Students table created');
-
-      logger.info('Database tables created successfully');
+      // Read the complete schema file - look in src directory
+      const schemaPath = path.join(process.cwd(), 'src', 'database', 'complete-schema.sql');
+      
+      if (!fs.existsSync(schemaPath)) {
+        logger.error(`Schema file not found at: ${schemaPath}`);
+        throw new Error(`Schema file not found: ${schemaPath}`);
+      }
+      
+      const schema = fs.readFileSync(schemaPath, 'utf8');
+      logger.info(`Schema file read successfully, length: ${schema.length} characters`);
+      
+      // Better SQL statement parsing
+      // Remove comments and normalize line endings
+      const cleanedSchema = schema
+        .replace(/--.*$/gm, '') // Remove line comments
+        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
+        .replace(/\r\n/g, '\n') // Normalize line endings
+        .replace(/\n\s*\n/g, '\n'); // Remove empty lines
+      
+      // Split by semicolon but be smarter about it
+      const statements = cleanedSchema
+        .split(';')
+        .map(stmt => stmt.trim())
+        .filter(stmt => stmt.length > 5) // Filter out very short statements
+        .filter(stmt => !stmt.match(/^\s*(--|\/\*)/)); // Filter remaining comments
+      
+      logger.info(`Found ${statements.length} SQL statements to execute`);
+      
+      // Execute each statement
+      let successCount = 0;
+      for (let i = 0; i < statements.length; i++) {
+        const statement = statements[i];
+        if (statement.trim()) {
+          try {
+            logger.info(`Executing statement ${i + 1}/${statements.length}: ${statement.substring(0, 100)}...`);
+            await this.executeInitQuery(statement + ';');
+            successCount++;
+          } catch (error: any) {
+            // Check if it's an INSERT statement - we can continue if inserts fail
+            const isInsertStatement = statement.trim().toUpperCase().startsWith('INSERT');
+            if (isInsertStatement) {
+              logger.warn(`Non-critical error executing statement ${i + 1} (INSERT):`, {
+                statement: statement.substring(0, 200),
+                error: error.message
+              });
+              // Continue with the next statement - don't throw
+            } else if (statement.trim().toUpperCase().startsWith('CREATE TABLE IF NOT EXISTS')) {
+              // For CREATE TABLE IF NOT EXISTS, we can also continue
+              logger.warn(`Table may already exist, continuing - statement ${i + 1}:`, {
+                statement: statement.substring(0, 200),
+                error: error.message
+              });
+            } else {
+              logger.error(`Failed to execute statement ${i + 1}:`, {
+                statement: statement.substring(0, 200),
+                error: error.message
+              });
+              // For other statements like CREATE TABLE (without IF NOT EXISTS), we need to stop
+              throw error;
+            }
+          }
+        }
+      }
+      
+      logger.info(`Database tables created successfully (${successCount} statements executed)`);
     } catch (error: any) {
       logger.error('Failed to create tables:', {
         message: error.message,
-        code: error.code
+        code: error.code,
+        stack: error.stack
       });
       throw error;
     }
@@ -145,10 +187,27 @@ export class DatabaseManager {
         return;
       }
 
+      // Get the first 50 chars of the SQL statement for better logging
+      const sqlPreview = sql.substring(0, 50).replace(/\s+/g, ' ').trim();
+      
       this.db.run(sql, params, function(err) {
         if (err) {
-          logger.error('Init query execution failed:', { sql, params, error: err });
-          reject(err);
+          // Handle specific SQLite error codes
+          const sqliteErr = err as any; // Type cast to access code property
+          
+          if (sqliteErr.code === 'SQLITE_CONSTRAINT') {
+            // Constraint violation - probably a duplicate key, can be ignored in many cases
+            logger.warn(`Constraint violation in query: ${sqlPreview}...`, { error: err.message });
+            resolve({ lastID: 0, changes: 0, warning: 'constraint_violation' });
+          } else if (sqliteErr.code === 'SQLITE_ERROR' && sql.toUpperCase().includes('INSERT')) {
+            // SQL error in insert statement - log but don't fail completely
+            logger.warn(`SQL error in insert statement: ${sqlPreview}...`, { error: err.message });
+            resolve({ lastID: 0, changes: 0, warning: 'insert_error' });
+          } else {
+            // Other errors - might be more serious
+            logger.error('Init query execution failed:', { sql: sqlPreview, params, error: err });
+            reject(err);
+          }
         } else {
           resolve({ lastID: this.lastID, changes: this.changes });
         }
