@@ -1,7 +1,11 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, AppBar, Toolbar, Typography, Container } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { School as SchoolIcon, Analytics as AnalyticsIcon, Dashboard as DashboardIcon } from '@mui/icons-material';
 import { Dashboard } from './pages/Dashboard';
+import { ClassesPage } from './pages/ClassesPage';
+import { ClassDetailPage } from './pages/ClassDetailPage';
 
 const theme = createTheme({
   palette: {
@@ -14,20 +18,78 @@ const theme = createTheme({
   },
 });
 
+const drawerWidth = 240;
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            EduManage Pro - AI-Powered School Management
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container maxWidth="xl" sx={{ mt: 2 }}>
-        <Dashboard />
-      </Container>
+      <Router>
+        <Box sx={{ display: 'flex' }}>
+          {/* App Bar */}
+          <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                EduManage Pro - AI-Powered School Management
+              </Typography>
+            </Toolbar>
+          </AppBar>
+
+          {/* Sidebar */}
+          <Drawer
+            variant="permanent"
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              [`& .MuiDrawer-paper`]: {
+                width: drawerWidth,
+                boxSizing: 'border-box',
+              },
+            }}
+          >
+            <Toolbar />
+            <Box sx={{ overflow: 'auto' }}>
+              <List>
+                <ListItem button component="a" href="/">
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
+                </ListItem>
+                <ListItem button component="a" href="/classes">
+                  <ListItemIcon>
+                    <SchoolIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Classes" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <AnalyticsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Analytics" secondary="Coming Soon" />
+                </ListItem>
+              </List>
+            </Box>
+          </Drawer>
+
+          {/* Main Content */}
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              width: { sm: `calc(100% - ${drawerWidth}px)` },
+            }}
+          >
+            <Toolbar />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/classes" element={<ClassesPage />} />
+              <Route path="/classes/:classId/*" element={<ClassDetailPage />} />
+            </Routes>
+          </Box>
+        </Box>
+      </Router>
     </ThemeProvider>
   );
 }
