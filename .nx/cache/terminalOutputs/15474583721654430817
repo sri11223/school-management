@@ -1,0 +1,19 @@
+
+> @edumanage/desktop@1.0.0-alpha.1 build
+> npm run build:renderer && npm run build:main
+
+
+> @edumanage/desktop@1.0.0-alpha.1 build:renderer
+> react-scripts build
+
+[31mCould not find a required file.[39m
+[31m  Name: [39m[36mindex.js[39m
+[31m  Searched in: [39m[36mC:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop\src[39m
+npm ERR! Lifecycle script `build:renderer` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @edumanage/desktop@1.0.0-alpha.1 
+npm ERR!   at location: C:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop 
+npm ERR! Lifecycle script `build` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @edumanage/desktop@1.0.0-alpha.1 
+npm ERR!   at location: C:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop 

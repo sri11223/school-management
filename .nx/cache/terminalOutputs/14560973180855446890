@@ -1,0 +1,22 @@
+
+> @edumanage/desktop@1.0.0-alpha.1 build
+> npm run build:renderer && npm run build:main
+
+
+> @edumanage/desktop@1.0.0-alpha.1 build:renderer
+> react-scripts build
+
+Creating an optimized production build...
+[31mFailed to compile.[39m
+[31m[39m
+Module not found: Error: Can't resolve './App' in 'C:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop\src'
+
+
+npm ERR! Lifecycle script `build:renderer` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @edumanage/desktop@1.0.0-alpha.1 
+npm ERR!   at location: C:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop 
+npm ERR! Lifecycle script `build` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @edumanage/desktop@1.0.0-alpha.1 
+npm ERR!   at location: C:\Users\nsrikrishna\school-management-app\edumanage-pro\apps\desktop 

@@ -1,0 +1,32 @@
+{
+  "run": {
+    "command": "nx run-many --target=build --all",
+    "startTime": "2025-07-09T11:17:49.883Z",
+    "endTime": "2025-07-09T11:18:04.381Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "@edumanage/ui-components:build",
+      "target": "build",
+      "projectName": "@edumanage/ui-components",
+      "hash": "18268970283413135945",
+      "startTime": "2025-07-09T11:17:49.901Z",
+      "endTime": "2025-07-09T11:17:59.919Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "@edumanage/desktop:build",
+      "target": "build",
+      "projectName": "@edumanage/desktop",
+      "hash": "5109561821661792536",
+      "startTime": "2025-07-09T11:17:49.902Z",
+      "endTime": "2025-07-09T11:18:04.369Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    }
+  ]
+}

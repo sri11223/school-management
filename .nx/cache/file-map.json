@@ -1,0 +1,183 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.3.2",
+  "deps": {
+    "@nx/workspace": "^17.2.8",
+    "nx": "^17.2.8",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "pathMappings": {
+    "@edumanage/ui-components": [
+      "packages/ui-components/src/index.ts"
+    ],
+    "@edumanage/core-logic": [
+      "packages/core-logic/src/index.ts"
+    ],
+    "@edumanage/database": [
+      "packages/database/src/index.ts"
+    ],
+    "@edumanage/ai-engine": [
+      "packages/ai-engine/src/index.ts"
+    ],
+    "@edumanage/whatsapp-service": [
+      "packages/whatsapp-service/src/index.ts"
+    ],
+    "@edumanage/utils": [
+      "packages/utils/src/index.ts"
+    ],
+    "@edumanage/types": [
+      "packages/types/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "pluginsConfig": {
+    "@nx/js": {
+      "analyzeSourceFiles": false
+    }
+  },
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": "tsconfig.base.json",
+        "hash": "14191742737787851207"
+      },
+      {
+        "file": "docs/DEVELOPMENT.md",
+        "hash": "15122605239622886277"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "1738274915197343624"
+      },
+      {
+        "file": "nx.json",
+        "hash": "13450635587342875848"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "6745622584482117884"
+      },
+      {
+        "file": "package.json",
+        "hash": "17076313763454629450"
+      },
+      {
+        "file": "electron-builder.json",
+        "hash": "12617648860141289002"
+      },
+      {
+        "file": "README.md",
+        "hash": "4913294326362084283"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "1305432401379005835"
+      },
+      {
+        "file": "lerna.json",
+        "hash": "2091952430149296410"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "3976351165982198066"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "14102432503284088658"
+      }
+    ],
+    "projectFileMap": {
+      "@edumanage/desktop": [
+        {
+          "file": "apps/desktop/electron-builder.json",
+          "hash": "8621879189334629582"
+        },
+        {
+          "file": "apps/desktop/package.json",
+          "hash": "3183636494739767199",
+          "deps": [
+            "npm:@emotion/react",
+            "npm:@emotion/styled",
+            "npm:@mui/icons-material",
+            "npm:@mui/material",
+            "npm:axios",
+            "npm:electron-updater",
+            "npm:react",
+            "npm:react-dom",
+            "npm:react-router-dom",
+            "npm:@types/node",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:concurrently",
+            "npm:electron",
+            "npm:electron-builder",
+            "npm:react-scripts",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "apps/desktop/public/index.html",
+          "hash": "4216654587323704633"
+        },
+        {
+          "file": "apps/desktop/src/main/main.ts",
+          "hash": "13971205852309577781"
+        },
+        {
+          "file": "apps/desktop/src/main/tsconfig.json",
+          "hash": "7220762346182782625"
+        },
+        {
+          "file": "apps/desktop/src/renderer/App.tsx",
+          "hash": "1753807408137938532"
+        },
+        {
+          "file": "apps/desktop/src/renderer/index.tsx",
+          "hash": "13999522271200096526"
+        },
+        {
+          "file": "apps/desktop/src/renderer/pages/Dashboard.tsx",
+          "hash": "15230165911648732606"
+        },
+        {
+          "file": "apps/desktop/src/App.tsx",
+          "hash": "13513071831627915010"
+        },
+        {
+          "file": "apps/desktop/src/index.tsx",
+          "hash": "11771811158490640353"
+        },
+        {
+          "file": "apps/desktop/public/electron.js",
+          "hash": "319977811598483245"
+        }
+      ],
+      "@edumanage/ui-components": [
+        {
+          "file": "packages/ui-components/package.json",
+          "hash": "13559094651040586565"
+        },
+        {
+          "file": "packages/ui-components/src/components/forms/Input.tsx",
+          "hash": "11144699477146129886"
+        },
+        {
+          "file": "packages/ui-components/src/index.ts",
+          "hash": "16767704258124974531"
+        },
+        {
+          "file": "packages/ui-components/src/components/tables/DataTable.tsx",
+          "hash": "13811743485813299520"
+        },
+        {
+          "file": "packages/ui-components/src/components/charts/Charts.tsx",
+          "hash": "4312350652523560219"
+        }
+      ]
+    }
+  }
+}

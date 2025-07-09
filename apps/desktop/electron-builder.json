@@ -1,0 +1,28 @@
+{
+  "appId": "com.edumanage.pro",
+  "productName": "EduManage Pro",
+  "electronVersion": "28.3.3",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "build/**/*",
+    "public/electron.js",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      "portable"
+    ],
+    "icon": "assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "portable": {
+    "artifactName": "EduManagePro-Portable.exe"
+  },
+  "forceCodeSigning": false
+}

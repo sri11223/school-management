@@ -1,0 +1,44 @@
+{
+  "name": "@edumanage/desktop",
+  "version": "1.0.0-alpha.1",
+  "description": "EduManage Pro - AI-Powered School Management System for Rural Schools",
+  "author": "EduManage Team",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
+    "dev:main": "tsc && electron build/main.js",
+    "dev:renderer": "react-scripts start",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:renderer": "react-scripts build",
+    "build:main": "tsc",
+    "package": "electron-builder",
+    "package:portable": "electron-builder --win portable",
+    "test": "react-scripts test --watchAll=false"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.4",
+    "@mui/material": "^5.15.4",
+    "axios": "^1.6.2",
+    "electron-is-dev": "^3.0.1",
+    "electron-updater": "^6.1.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "react-scripts": "5.0.1",
+    "typescript": "^5.3.3"
+  },
+  "browserslist": [
+    "last 1 electron version"
+  ]
+}

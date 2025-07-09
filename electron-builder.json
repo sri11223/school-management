@@ -1,0 +1,100 @@
+{
+  "appId": "com.edumanage.pro",
+  "productName": "EduManage Pro",
+  "copyright": "Copyright © 2025 EduManage Pro Team",
+  "directories": {
+    "buildResources": "../../assets",
+    "output": "dist"
+  },
+  "files": [
+    "build/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "../../packages/database/src/migrations",
+      "to": "database/migrations"
+    },
+    {
+      "from": "../../packages/database/src/seeds",
+      "to": "database/seeds"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64", "ia32"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      },
+      {
+        "target": "msi",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "../../assets/icons/icon.ico",
+    "requestedExecutionLevel": "asInvoker",
+    "artifactName": "EduManagePro-${version}-${os}-${arch}.${ext}"
+  },
+  "mac": {
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "icon": "../../assets/icons/icon.icns",
+    "category": "public.app-category.education",
+    "artifactName": "EduManagePro-${version}-${os}-${arch}.${ext}"
+  },
+  "linux": {
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "../../assets/icons/icon.png",
+    "category": "Education",
+    "artifactName": "EduManagePro-${version}-${os}-${arch}.${ext}"
+  },
+  "portable": {
+    "artifactName": "EduManagePro-${version}-Portable.${ext}",
+    "requestExecutionLevel": "user"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": false,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "menuCategory": "Education",
+    "shortcutName": "EduManage Pro",
+    "artifactName": "EduManagePro-${version}-Setup.${ext}",
+    "installerIcon": "../../assets/icons/installer.ico",
+    "uninstallerIcon": "../../assets/icons/uninstaller.ico",
+    "installerHeaderIcon": "../../assets/icons/installer-header.ico",
+    "include": "../../tools/build-scripts/installer.nsh"
+  },
+  "msi": {
+    "artifactName": "EduManagePro-${version}-Enterprise.${ext}",
+    "oneClick": false,
+    "warningsAsErrors": false
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "yourusername",
+    "repo": "edumanage-pro"
+  },
+  "afterSign": "../../tools/build-scripts/notarize.js",
+  "compression": "maximum",
+  "buildVersion": "1.0.0"
+}

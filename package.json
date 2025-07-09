@@ -1,0 +1,30 @@
+{
+  "name": "edumanage-pro",
+  "version": "1.0.0-alpha.1",
+  "description": "AI-Powered School Management System for Indian Schools",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "nx run-many --target=dev --all --parallel",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all",
+    "desktop:dev": "cd apps/desktop && npm run dev",
+    "desktop:build": "cd apps/desktop && npm run build",
+    "desktop:package": "cd apps/desktop && npm run package",
+    "setup": "npm install && npm run build",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "devDependencies": {
+    "@nx/workspace": "^17.2.8",
+    "nx": "^17.2.8",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  }
+}
