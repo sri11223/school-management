@@ -65,10 +65,12 @@ CREATE TABLE IF NOT EXISTS students (
     address TEXT,
     section_id INTEGER,
     admission_date DATE NOT NULL,
-    academic_year TEXT DEFAULT '2024-25',
+    academic_year_id INTEGER DEFAULT 1,
+    category TEXT DEFAULT 'General',
     status TEXT DEFAULT 'Active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (section_id) REFERENCES sections(id)
+    FOREIGN KEY (section_id) REFERENCES sections(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
 );
 
 -- Subjects
