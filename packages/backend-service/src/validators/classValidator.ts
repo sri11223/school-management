@@ -3,24 +3,18 @@ import { ValidationError } from '../middleware/errorHandler';
 
 export const validateClass = (req: Request, res: Response, next: NextFunction) => {
   const {
-    name,
     numeric_level,
-    academic_year_id
+    academic_year
   } = req.body;
 
   const errors: string[] = [];
-
-  // Required fields validation
-  if (!name || name.trim() === '') {
-    errors.push('Class name is required');
-  }
 
   if (!numeric_level || isNaN(numeric_level) || numeric_level < 1 || numeric_level > 12) {
     errors.push('Numeric level must be a number between 1 and 12');
   }
 
-  if (!academic_year_id || isNaN(academic_year_id)) {
-    errors.push('Academic year ID is required and must be a number');
+  if (!academic_year || academic_year.trim() === '') {
+    errors.push('Academic year is required');
   }
 
   if (errors.length > 0) {

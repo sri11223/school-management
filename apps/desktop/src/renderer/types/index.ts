@@ -25,7 +25,10 @@ export interface Class {
   id?: number;
   name: string;
   numeric_level: number;
-  academic_year_id: number;
+  academic_year: string;
+  strength?: number;
+  number_of_students: number; // Add field for total students
+  number_of_sections: number; // Add field for total sections
   created_at?: string;
 }
 
@@ -40,9 +43,9 @@ export interface Section {
   created_at?: string;
 }
 
-export interface ClassWithSections extends Class {
+export interface ClassWithDetails extends Class {
   sections?: Section[];
-  academic_year?: string;
+  student_count?: number;
 }
 
 // Teacher Types
@@ -62,35 +65,82 @@ export interface Teacher {
 }
 
 // Attendance Types
-export interface AttendanceRecord {
+export interface Attendance {
   id?: number;
   student_id: number;
-  section_id: number;
+  class_id: number;
   date: string;
-  status: 'Present' | 'Absent' | 'Late' | 'Excused';
+  status: 'Present' | 'Absent' | 'Late' | 'Half Day' | 'Excused';
+  check_in_time?: string;
+  check_out_time?: string;
   remarks?: string;
-  marked_by?: number;
+  marked_by: number;
   created_at?: string;
+  updated_at?: string;
+  // Additional fields for display
+  student_name?: string;
+  student?: Student;
+}
+
+export interface AttendanceFilters {
+  class_id?: number;
+  student_id?: number;
+  date_from?: string;
+  date_to?: string;
+  status?: string;
+}
+
+export interface AttendanceStats {
+  student_id: number;
+  student_name: string;
+  total_days: number;
+  present_days: number;
+  absent_days: number;
+  late_days: number;
+  half_days: number;
+  attendance_percentage: number;
 }
 
 // Exam Types
 export interface Exam {
   id?: number;
   name: string;
-  description?: string;
-  exam_type: 'quiz' | 'test' | 'midterm' | 'final' | 'assignment';
-  exam_type_id: number;
+  exam_type: 'Unit Test' | 'Mid Term' | 'Final' | 'Monthly' | 'Quarterly' | 'Half Yearly' | 'Annual';
+  subject_id: number;
   class_id: number;
-  section_id: number;
-  subject: string;
-  date: string;
-  duration: number; // in minutes
-  max_marks: number;
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   academic_year_id: number;
-  start_date: string;
-  end_date: string;
+  exam_date: string;
+  start_time: string;
+  end_time: string;
+  total_marks: number;
+  pass_marks: number;
   instructions?: string;
+  created_by: number;
+  status: 'Draft' | 'Published' | 'Completed' | 'Cancelled';
+  created_at?: string;
+  updated_at?: string;
+  // Additional fields for display
+  subject_name?: string;
+  subject_code?: string;
+  class_name?: string;
+  grade?: string;
+  section?: string;
+  academic_year?: string;
+  created_by_name?: string;
+}
+
+export interface ExamQuestion {
+  id?: number;
+  exam_id: number;
+  question_text: string;
+  question_type: 'MCQ' | 'Fill in the Blanks' | 'Short Answer' | 'Long Answer' | 'True/False';
+  marks: number;
+  difficulty_level: 'Easy' | 'Medium' | 'Hard';
+  options?: string[];
+  correct_answer?: string;
+  explanation?: string;
+  topic?: string;
+  bloom_level?: string;
   created_at?: string;
 }
 
@@ -99,11 +149,29 @@ export interface ExamResult {
   exam_id: number;
   student_id: number;
   marks_obtained: number;
-  grade?: string;
+  percentage: number;
+  grade: string;
+  rank?: number;
+  status: 'Present' | 'Absent' | 'Malpractice';
+  answer_sheet_path?: string;
   remarks?: string;
   created_at?: string;
+  updated_at?: string;
+  // Additional fields for display
   exam?: Exam;
   student?: Student;
+  student_name?: string;
+}
+
+export interface ExamFilters {
+  subject_id?: number;
+  class_id?: number;
+  academic_year_id?: number;
+  exam_type?: string;
+  status?: string;
+  date_from?: string;
+  date_to?: string;
+  search?: string;
 }
 
 // Fee Types

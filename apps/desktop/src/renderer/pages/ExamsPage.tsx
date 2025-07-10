@@ -127,15 +127,16 @@ export const ExamsPage: React.FC = () => {
 
   const handleEditExam = (exam: Exam) => {
     setEditingExam(exam);
-    setFormData({
-      name: exam.name,
-      exam_type_id: exam.exam_type_id.toString(),
-      class_id: exam.class_id.toString(),
-      academic_year_id: exam.academic_year_id.toString(),
-      start_date: exam.start_date,
-      end_date: exam.end_date,
-      instructions: exam.instructions || '',
-    });
+      setFormData({
+        name: exam.name,
+        exam_type: exam.exam_type,
+        class_id: exam.class_id.toString(),
+        academic_year_id: exam.academic_year_id.toString(),
+        exam_date: exam.exam_date,
+        start_time: exam.start_time,
+        end_time: exam.end_time,
+        instructions: exam.instructions || '',
+      });
     setDialogOpen(true);
   };
 
@@ -247,7 +248,7 @@ export const ExamsPage: React.FC = () => {
                 <Typography variant="h6">Upcoming Exams</Typography>
               </Box>
               <Typography variant="h4" fontWeight="bold">
-                {exams.filter(exam => new Date(exam.start_date) > new Date()).length}
+                  {exams.filter(exam => new Date(exam.exam_date) > new Date()).length}
               </Typography>
             </CardContent>
           </Card>
@@ -262,7 +263,7 @@ export const ExamsPage: React.FC = () => {
               <Typography variant="h4" fontWeight="bold">
                 {exams.filter(exam => {
                   const now = new Date();
-                  return new Date(exam.start_date) <= now && new Date(exam.end_date) >= now;
+                  return new Date(exam.exam_date) <= now && new Date(exam.exam_date) >= now;
                 }).length}
               </Typography>
             </CardContent>
@@ -317,14 +318,14 @@ export const ExamsPage: React.FC = () => {
                       <TableCell>
                         {classes.find(c => c.id === exam.class_id)?.name || 'N/A'}
                       </TableCell>
-                      <TableCell>{new Date(exam.start_date).toLocaleDateString()}</TableCell>
-                      <TableCell>{new Date(exam.end_date).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(exam.exam_date).toLocaleDateString()}</TableCell>
+                <TableCell>{exam.start_time} - {exam.end_time}</TableCell>
                       <TableCell>
-                        <Chip
-                          label={getStatusText(exam.start_date, exam.end_date)}
-                          color={getStatusColor(exam.start_date, exam.end_date)}
-                          size="small"
-                        />
+                <Chip
+                  label={getStatusText(exam.exam_date, exam.exam_date)}
+                  color={getStatusColor(exam.exam_date, exam.exam_date)}
+                  size="small"
+                />
                       </TableCell>
                       <TableCell>
                         <IconButton

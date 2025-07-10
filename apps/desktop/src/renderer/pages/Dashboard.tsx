@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -31,10 +32,24 @@ interface StatCardProps {
     value: number;
     isPositive: boolean;
   };
+  onClick?: () => void;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, trend }) => (
-  <Card sx={{ height: '100%', position: 'relative', overflow: 'visible' }}>
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, trend, onClick }) => (
+  <Card 
+    sx={{ 
+      height: '100%', 
+      position: 'relative', 
+      overflow: 'visible',
+      cursor: onClick ? 'pointer' : 'default',
+      '&:hover': onClick ? {
+        transform: 'translateY(-2px)',
+        boxShadow: 2,
+      } : undefined,
+      transition: 'all 0.2s ease-in-out'
+    }}
+    onClick={onClick}
+  >
     <CardContent>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Avatar sx={{ bgcolor: `${color}.main`, mr: 2 }}>
@@ -69,6 +84,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color, tr
 );
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -166,6 +182,7 @@ export const Dashboard: React.FC = () => {
               icon={PeopleIcon}
               color="primary"
               trend={{ value: 5.2, isPositive: true }}
+              onClick={() => navigate('/overview')}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -175,6 +192,7 @@ export const Dashboard: React.FC = () => {
               icon={SchoolIcon}
               color="secondary"
               trend={{ value: 2.1, isPositive: true }}
+              onClick={() => navigate('/overview')}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -183,6 +201,7 @@ export const Dashboard: React.FC = () => {
               value={analytics.totalClasses}
               icon={ClassIcon}
               color="success"
+              onClick={() => navigate('/overview')}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -192,6 +211,7 @@ export const Dashboard: React.FC = () => {
               icon={AttendanceIcon}
               color="warning"
               trend={{ value: 1.8, isPositive: false }}
+              onClick={() => navigate('/overview')}
             />
           </Grid>
 

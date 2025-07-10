@@ -181,7 +181,7 @@ export const ClassAttendanceTab: React.FC<ClassAttendanceTabProps> = ({ classId,
       
       if (activeTab === 0) {
         // Daily attendance view - get attendance for selected date
-        const response = await attendanceAPI.getClassAttendance(parseInt(classId), selectedDate) as { attendance: Attendance[] };
+        const response = await attendanceAPI.getClassAttendance(parseInt(classId), selectedDate) as { attendance: Attendance[]; report: any[] };
         setAttendanceRecords(response.attendance || []);
       } else if (activeTab === 1) {
         // Records view - get paginated attendance records
@@ -219,7 +219,7 @@ export const ClassAttendanceTab: React.FC<ClassAttendanceTabProps> = ({ classId,
       const response = await attendanceAPI.getAttendanceReport(parseInt(classId), {
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate.toISOString().split('T')[0]
-      }) as { report: AttendanceStats[] };
+      });
 
       setAttendanceStats(response.report || []);
     } catch (err) {

@@ -1,9 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box, AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { School as SchoolIcon, Analytics as AnalyticsIcon, Dashboard as DashboardIcon } from '@mui/icons-material';
+import { School as SchoolIcon, Analytics as AnalyticsIcon, Dashboard as DashboardIcon, Visibility as OverviewIcon } from '@mui/icons-material';
 import { Dashboard } from './pages/Dashboard';
+import { OverviewPage } from './pages/OverviewPage';
 import { ClassesPage } from './pages/ClassesPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
 
@@ -50,13 +51,19 @@ function App() {
             <Toolbar />
             <Box sx={{ overflow: 'auto' }}>
               <List>
-                <ListItem button component="a" href="/">
+                <ListItem button component={Link} to="/">
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
-                <ListItem button component="a" href="/classes">
+                <ListItem button component={Link} to="/overview">
+                  <ListItemIcon>
+                    <OverviewIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Overview" />
+                </ListItem>
+                <ListItem button component={Link} to="/classes">
                   <ListItemIcon>
                     <SchoolIcon />
                   </ListItemIcon>
@@ -84,6 +91,7 @@ function App() {
             <Toolbar />
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/overview" element={<OverviewPage />} />
               <Route path="/classes" element={<ClassesPage />} />
               <Route path="/classes/:classId/*" element={<ClassDetailPage />} />
             </Routes>

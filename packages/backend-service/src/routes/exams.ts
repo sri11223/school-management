@@ -12,7 +12,6 @@ router.get('/', asyncHandler(async (req, res) => {
     limit = 10,
     subject_id,
     class_id,
-    academic_year_id,
     exam_type,
     status,
     date_from,
@@ -22,8 +21,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
   const filters = {
     subject_id: subject_id ? parseInt(subject_id as string) : undefined,
-    class_id: class_id ? parseInt(class_id as string) : undefined,
-    academic_year_id: academic_year_id ? parseInt(academic_year_id as string) : undefined,
+    class_id: class_id as string,
     exam_type: exam_type as string,
     status: status as string,
     date_from: date_from as string,

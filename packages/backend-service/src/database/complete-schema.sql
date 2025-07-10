@@ -86,18 +86,20 @@ CREATE TABLE IF NOT EXISTS user_permissions (
 
 -- Classes (Class 1, Class 2, etc.)
 CREATE TABLE IF NOT EXISTS classes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL, -- "Class 1", "Class 2", etc.
+    id UUID PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+    name TEXT, -- "Class 1", "Class 2", etc.
     numeric_level INTEGER, -- 1, 2, 3... for sorting
-    academic_year_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+    academic_year TEXT DEFAULT '2024-25', -- Just store as string
+    strength INTEGER DEFAULT 0, -- Number of students
+    number_of_students INTEGER DEFAULT 0, -- Total students in the class
+    number_of_sections INTEGER DEFAULT 0, -- Total sections in the class
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP -- Added back created_at column
 );
 
 -- Sections (A, B, C within each class)
 CREATE TABLE IF NOT EXISTS sections (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    class_id INTEGER NOT NULL,
+    id UUID PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+    class_id TEXT NOT NULL,
     section_name TEXT NOT NULL, -- "A", "B", "C"
     class_teacher_id INTEGER,
     max_students INTEGER DEFAULT 50,
@@ -166,7 +168,7 @@ CREATE TABLE IF NOT EXISTS students (
     -- Academic Information
     section_id INTEGER,
     admission_date DATE NOT NULL,
-    academic_year_id INTEGER,
+    academic_year TEXT,
     previous_school TEXT,
     
     -- AI Learning Profile
@@ -192,8 +194,7 @@ CREATE TABLE IF NOT EXISTS students (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (section_id) REFERENCES sections(id),
-    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+    FOREIGN KEY (section_id) REFERENCES sections(id)
 );
 
 -- Parents/Guardians
@@ -237,7 +238,7 @@ CREATE TABLE IF NOT EXISTS exams (
     name_telugu TEXT,
     exam_type_id INTEGER NOT NULL,
     class_id INTEGER NOT NULL,
-    academic_year_id INTEGER NOT NULL,
+    academic_year TEXT NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     created_by INTEGER NOT NULL,
@@ -247,7 +248,6 @@ CREATE TABLE IF NOT EXISTS exams (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (exam_type_id) REFERENCES exam_types(id),
     FOREIGN KEY (class_id) REFERENCES classes(id),
-    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id),
     FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
@@ -344,12 +344,11 @@ CREATE TABLE IF NOT EXISTS fee_structure (
     class_id INTEGER NOT NULL,
     fee_category_id INTEGER NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    academic_year_id INTEGER NOT NULL,
+    academic_year TEXT NOT NULL,
     due_date_month INTEGER, -- 1-12
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (class_id) REFERENCES classes(id),
-    FOREIGN KEY (fee_category_id) REFERENCES fee_categories(id),
-    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+    FOREIGN KEY (fee_category_id) REFERENCES fee_categories(id)
 );
 
 -- Fee Payments
@@ -586,19 +585,6 @@ INSERT OR IGNORE INTO subjects (name, name_telugu, code, is_core) VALUES
 ('Social Studies', 'సామాజిక అధ్యయనాలు', 'SOC', TRUE),
 ('Hindi', 'హిందీ', 'HIN', FALSE),
 ('Physical Education', 'శారీరక విద్య', 'PHY', FALSE);
-
--- Insert Default Classes
-INSERT OR IGNORE INTO classes (name, numeric_level, academic_year_id) VALUES 
-('Class 1', 1, 1),
-('Class 2', 2, 1),
-('Class 3', 3, 1),
-('Class 4', 4, 1),
-('Class 5', 5, 1),
-('Class 6', 6, 1),
-('Class 7', 7, 1),
-('Class 8', 8, 1),
-('Class 9', 9, 1),
-('Class 10', 10, 1);
 
 -- Insert Exam Types
 INSERT OR IGNORE INTO exam_types (name, name_telugu, weightage) VALUES 

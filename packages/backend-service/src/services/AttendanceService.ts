@@ -4,7 +4,7 @@ import { NotFoundError, ValidationError } from '../middleware/errorHandler';
 export interface Attendance {
   id?: number;
   student_id: number;
-  class_id: number;
+  class_id: string; // Changed to string for UUID
   date: string;
   status: 'Present' | 'Absent' | 'Late' | 'Half Day' | 'Excused';
   check_in_time?: string;
@@ -16,7 +16,7 @@ export interface Attendance {
 }
 
 export interface AttendanceFilters {
-  class_id?: number;
+  class_id?: string; // Changed to string for UUID
   student_id?: number;
   date_from?: string;
   date_to?: string;
@@ -45,7 +45,7 @@ export class AttendanceService {
     // Check if attendance for this student and date already exists
     const existingQuery = `
       SELECT COUNT(*) as count 
-      FROM attendance 
+      FROM attendance_records 
       WHERE student_id = ? AND date = ?
     `;
     const existing = await this.dbManager.getAll(existingQuery, [attendanceData.student_id, attendanceData.date]);
@@ -55,7 +55,7 @@ export class AttendanceService {
     }
 
     const query = `
-      INSERT INTO attendance (
+      INSERT INTO attendance_records (
         student_id, class_id, date, status, check_in_time,
         check_out_time, remarks, marked_by
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -73,7 +73,7 @@ export class AttendanceService {
     ];
 
     const result = await this.dbManager.runQuery(query, params);
-    const attendance = await this.dbManager.getAll('SELECT * FROM attendance WHERE id = ?', [result.lastID]);
+    const attendance = await this.dbManager.getAll('SELECT * FROM attendance_records WHERE id = ?', [result.lastID]);
     return attendance[0];
   }
 
@@ -107,12 +107,12 @@ export class AttendanceService {
   }
 
   async getAttendanceById(id: number): Promise<Attendance | null> {
-    const query = `SELECT * FROM attendance WHERE id = ?`;
+    const query = `SELECT * FROM attendance_records WHERE id = ?`;
     const attendance = await this.dbManager.getAll(query, [id]);
     return attendance.length > 0 ? attendance[0] : null;
   }
 
-  async markBulkAttendance(classId: number, date: string, attendanceList: Array<{student_id: number, status: string, remarks?: string}>, markedBy: number): Promise<void> {
+  async markBulkAttendance(classId: string, date: string, attendanceList: Array<{student_id: number, status: string, remarks?: string}>, markedBy: number): Promise<void> {
     // Begin transaction
     await this.dbManager.beginTransaction();
     
@@ -135,21 +135,23 @@ export class AttendanceService {
     }
   }
 
-  async getClassAttendance(classId: number, date: string): Promise<any[]> {
+  async getClassAttendance(classId: string, date: string): Promise<any[]> {
     const query = `
       SELECT 
         s.id as student_id,
         s.first_name || ' ' || s.last_name as student_name,
         s.admission_number,
         s.roll_number,
-        a.id as attendance_id,
-        a.status,
-        a.check_in_time,
-        a.check_out_time,
-        a.remarks
+        ar.id as attendance_id,
+        ar.status,
+        ar.check_in_time,
+        ar.check_out_time,
+        ar.remarks
       FROM students s
-      LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
-      WHERE s.class_id = ? AND s.status = 'Active'
+      LEFT JOIN sections sec ON s.section_id = sec.id
+      LEFT JOIN classes c ON sec.class_id = c.id
+      LEFT JOIN attendance_records ar ON s.id = ar.student_id AND ar.date = ?
+      WHERE c.id = ?
       ORDER BY s.roll_number, s.first_name
     `;
     
@@ -162,13 +164,9 @@ export class AttendanceService {
       SELECT 
         a.*,
         c.name as class_name,
-        c.grade,
-        c.section,
-        t.first_name || ' ' || t.last_name as marked_by_name,
         COUNT(*) OVER() as total_count
-      FROM attendance a
+      FROM attendance_records a
       JOIN classes c ON a.class_id = c.id
-      JOIN teachers t ON a.marked_by = t.id
       WHERE a.student_id = ?
     `;
     const params: any[] = [studentId];
@@ -291,7 +289,7 @@ export class AttendanceService {
         ROUND(
           (COUNT(CASE WHEN a.status IN ('Present', 'Late', 'Half Day') THEN 1 END) * 100.0) / COUNT(*), 2
         ) as attendance_percentage
-      FROM attendance a
+      FROM attendance_records a
       WHERE a.class_id = ? AND a.date BETWEEN ? AND ?
       GROUP BY a.date
       ORDER BY a.date
@@ -311,7 +309,7 @@ export class AttendanceService {
       throw new NotFoundError('Attendance record not found');
     }
 
-    const query = `DELETE FROM attendance WHERE id = ?`;
+    const query = `DELETE FROM attendance_records WHERE id = ?`;
     await this.dbManager.runQuery(query, [id]);
   }
 
@@ -326,7 +324,7 @@ export class AttendanceService {
           (COUNT(CASE WHEN a.status IN ('Present', 'Late', 'Half Day') THEN 1 END) * 100.0) / 
           COUNT(*), 2
         ) as overall_attendance_percentage
-      FROM attendance a
+      FROM attendance_records a
       WHERE a.class_id = ? 
       AND strftime('%Y', a.date) = ? 
       AND strftime('%m', a.date) = ?

@@ -23,7 +23,7 @@ import {
   Tab,
   TextField,
 } from '@mui/material';
-import { AttendanceRecord, Section, Student, ClassWithSections } from '../types';
+import { Attendance, Section, Student, ClassWithDetails } from '../types';
 import { apiClient } from '../services/api';
 
 interface TabPanelProps {
@@ -62,9 +62,9 @@ export const AttendancePage: React.FC = () => {
   const fetchSections = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get('/classes?include_sections=true') as { data: ClassWithSections[] };
+      const response = await apiClient.get('/classes?include_sections=true') as { data: ClassWithDetails[] };
       const allSections: Section[] = [];
-      response.data.forEach((cls: ClassWithSections) => {
+      response.data.forEach((cls: ClassWithDetails) => {
         if (cls.sections) {
           allSections.push(...cls.sections);
         }
@@ -93,11 +93,11 @@ export const AttendancePage: React.FC = () => {
     try {
       setLoading(true);
       const dateStr = selectedDate.toISOString().split('T')[0];
-      const response = await apiClient.get(`/attendance?section_id=${selectedSection}&date=${dateStr}`) as { data: AttendanceRecord[] };
+      const response = await apiClient.get(`/attendance?section_id=${selectedSection}&date=${dateStr}`) as { data: Attendance[] };
       
       // Initialize attendance data
       const initialData: {[key: number]: string} = {};
-      response.data.forEach((record: AttendanceRecord) => {
+      response.data.forEach((record: Attendance) => {
         initialData[record.student_id] = record.status;
       });
       setAttendanceData(initialData);

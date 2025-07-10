@@ -23,10 +23,11 @@ import {
 } from '@mui/icons-material';
 import { Class, Section } from '../types';
 import { apiClient } from '../services/api';
+import { ClassOverviewTab } from './class-detail/ClassOverviewTab';
 import { ClassStudentsTab } from './class-detail/ClassStudentsTab';
 import { ClassExamsTab } from './class-detail/ClassExamsTab';
 import { ClassAttendanceTab } from './class-detail/ClassAttendanceTab';
-import { ClassAnalyticsTab } from './class-detail/ClassAnalyticsTab';
+import { ClassPerformanceTab } from './class-detail/ClassPerformanceTab';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,11 +64,11 @@ export const ClassDetailPage: React.FC = () => {
   const getActiveTab = useCallback(() => {
     const path = location.pathname.split('/').pop();
     switch (path) {
-      case 'students': return 0;
-      case 'exams': return 1;
-      case 'attendance': return 2;
-      case 'analytics': return 3;
-      default: return 0;
+      case 'students': return 1;
+      case 'exams': return 2;
+      case 'attendance': return 3;
+      case 'performance': return 4;
+      default: return 0; // Overview tab
     }
   }, [location.pathname]);
 
@@ -78,17 +79,19 @@ export const ClassDetailPage: React.FC = () => {
   }, [getActiveTab]);
 
   const fetchClassData = useCallback(async () => {
+    if (!classId) {
+      setError('Invalid class ID');
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      
-      // Fetch class data with sections
+
       const classResponse = await apiClient.get(`/classes/${classId}?include_sections=true`);
-      setClassData((classResponse as any).data);
-      
-      // Fetch sections for this class
-      const sectionsResponse = await apiClient.get(`/classes/${classId}/sections`);
-      setSections((sectionsResponse as any).data);
+      console.log('API Response:', classResponse); // Debug log
+      setClassData(classResponse as Class);
+      setSections((classResponse as any).sections || []);
     } catch (err) {
       setError('Failed to fetch class data');
       console.error('Error fetching class data:', err);
@@ -105,8 +108,9 @@ export const ClassDetailPage: React.FC = () => {
     setActiveTab(newValue);
     
     // Update URL based on tab
-    const tabPaths = ['students', 'exams', 'attendance', 'analytics'];
-    navigate(`/classes/${classId}/${tabPaths[newValue]}`);
+    const tabPaths = ['', 'students', 'exams', 'attendance', 'performance'];
+    const newPath = `/classes/${classId}${tabPaths[newValue] ? `/${tabPaths[newValue]}` : ''}`;
+    navigate(newPath);
   };
 
   const getTabStats = () => {
@@ -188,7 +192,7 @@ export const ClassDetailPage: React.FC = () => {
                 {classData.name}
               </Typography>
               <Typography variant="body1" color="text.secondary" gutterBottom>
-                Class Level: {classData.numeric_level} • Academic Year: {classData.academic_year_id}
+                Class Level: {classData.numeric_level} • Academic Year: {classData.academic_year}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
                 <Chip
@@ -226,60 +230,72 @@ export const ClassDetailPage: React.FC = () => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={activeTab} onChange={handleTabChange} aria-label="class navigation tabs">
             <Tab
-              label="Students"
-              icon={<PeopleIcon />}
+              label="Overview"
+              icon={<SchoolIcon />}
               iconPosition="start"
               id="class-tab-0"
               aria-controls="class-tabpanel-0"
             />
             <Tab
-              label="Exams"
-              icon={<AssessmentIcon />}
+              label="Students"
+              icon={<PeopleIcon />}
               iconPosition="start"
               id="class-tab-1"
               aria-controls="class-tabpanel-1"
             />
             <Tab
-              label="Attendance"
-              icon={<EventNoteIcon />}
+              label="Exams"
+              icon={<AssessmentIcon />}
               iconPosition="start"
               id="class-tab-2"
               aria-controls="class-tabpanel-2"
             />
             <Tab
-              label="Analytics"
-              icon={<AnalyticsIcon />}
+              label="Attendance"
+              icon={<EventNoteIcon />}
               iconPosition="start"
               id="class-tab-3"
               aria-controls="class-tabpanel-3"
+            />
+            <Tab
+              label="Performance"
+              icon={<AnalyticsIcon />}
+              iconPosition="start"
+              id="class-tab-4"
+              aria-controls="class-tabpanel-4"
             />
           </Tabs>
         </Box>
 
         {/* Tab Panels */}
         <TabPanel value={activeTab} index={0}>
-          <ClassStudentsTab classId={classId!} classData={classData} sections={sections} />
+          <ClassOverviewTab classId={classId!} classData={classData} sections={sections} />
         </TabPanel>
 
         <TabPanel value={activeTab} index={1}>
-          <ClassExamsTab classId={classId!} classData={classData} sections={sections} />
+          <ClassStudentsTab classId={classId!} classData={classData} sections={sections} />
         </TabPanel>
 
         <TabPanel value={activeTab} index={2}>
-          <ClassAttendanceTab classId={classId!} classData={classData} sections={sections} />
+          <ClassExamsTab classId={classId!} classData={classData} sections={sections} />
         </TabPanel>
 
         <TabPanel value={activeTab} index={3}>
-          <ClassAnalyticsTab classId={classId!} classData={classData} sections={sections} />
+          <ClassAttendanceTab classId={classId!} classData={classData} sections={sections} />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={4}>
+          <ClassPerformanceTab classId={classId!} classData={classData} sections={sections} />
         </TabPanel>
       </Card>
 
       {/* Nested Routes for Direct URL Access */}
       <Routes>
+        <Route path="/" element={<></>} />
         <Route path="students" element={<></>} />
         <Route path="exams" element={<></>} />
         <Route path="attendance" element={<></>} />
-        <Route path="analytics" element={<></>} />
+        <Route path="performance" element={<></>} />
       </Routes>
     </Box>
   );

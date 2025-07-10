@@ -142,22 +142,42 @@ export const studentAPI = {
 // Class APIs
 export const classAPI = {
   getAll: (params?: any) => apiClient.get<PaginatedResponse<any>>('/classes', params),
-  getById: (id: number) => apiClient.get(`/classes/${id}`),
+  getById: (id: string) => apiClient.get(`/classes/${id}`),
   create: (data: any) => apiClient.post('/classes', data),
-  update: (id: number, data: any) => apiClient.put(`/classes/${id}`, data),
-  delete: (id: number) => apiClient.delete(`/classes/${id}`),
-  getStatistics: (id: number) => apiClient.get(`/classes/${id}/statistics`),
+  update: (id: string, data: any) => apiClient.put(`/classes/${id}`, data),
+  delete: (id: string) => apiClient.delete(`/classes/${id}`),
+  getStatistics: (id: string) => apiClient.get(`/classes/${id}/statistics`),
+  getPerformance: (id: string) => apiClient.get(`/classes/${id}/performance`),
   getByLevel: (level: number) => apiClient.get(`/classes/level/${level}`),
+  
+  // Students in class
+  getStudents: (id: string, params?: any) => apiClient.get(`/classes/${id}/students`, params),
+  createStudent: (data: any) => apiClient.post('/classes/students', data),
+  updateStudent: (studentId: number, data: any) => apiClient.put(`/classes/students/${studentId}`, data),
+  deleteStudent: (studentId: number) => apiClient.delete(`/classes/students/${studentId}`),
+  getStudentPerformance: (studentId: number) => apiClient.get(`/classes/students/${studentId}/performance`),
+  getStudentAttendanceStats: (studentId: number, params: { month: number; year: number }) => 
+    apiClient.get(`/classes/students/${studentId}/attendance-stats`, params),
+  
+  // Exams
+  getExams: (id: string, params?: any) => apiClient.get(`/classes/${id}/exams`, params),
+  createExam: (data: any) => apiClient.post('/classes/exams', data),
+  updateExam: (examId: number, data: any) => apiClient.put(`/classes/exams/${examId}`, data),
+  deleteExam: (examId: number) => apiClient.delete(`/classes/exams/${examId}`),
+  
+  // Attendance
+  getAttendance: (id: string, params: { date: string; page?: number; limit?: number }) => 
+    apiClient.get(`/classes/${id}/attendance`, params),
+  markAttendance: (data: any) => apiClient.post('/classes/attendance', data),
   
   // Section APIs
   getAllSections: (params?: any) => apiClient.get<PaginatedResponse<any>>('/classes/sections/all', params),
-  getSectionsByClass: (classId: number) => apiClient.get(`/classes/${classId}/sections`),
-  getSectionById: (sectionId: number) => apiClient.get(`/classes/sections/${sectionId}`),
+  getSectionStudents: (sectionId: string, params?: any) => apiClient.get(`/classes/sections/${sectionId}/students`, params),
+  getSectionById: (sectionId: string) => apiClient.get(`/classes/sections/${sectionId}`),
   createSection: (data: any) => apiClient.post('/classes/sections', data),
-  updateSection: (sectionId: number, data: any) => apiClient.put(`/classes/sections/${sectionId}`, data),
-  deleteSection: (sectionId: number) => apiClient.delete(`/classes/sections/${sectionId}`),
-  getSectionStudents: (sectionId: number, params?: any) => apiClient.get(`/classes/sections/${sectionId}/students`, params),
-  getSectionStatistics: (sectionId: number) => apiClient.get(`/classes/sections/${sectionId}/statistics`),
+  updateSection: (sectionId: string, data: any) => apiClient.put(`/classes/sections/${sectionId}`, data),
+  deleteSection: (sectionId: string) => apiClient.delete(`/classes/sections/${sectionId}`),
+  getSectionStatistics: (sectionId: string) => apiClient.get(`/classes/sections/${sectionId}/statistics`),
   getSectionsByTeacher: (teacherId: number) => apiClient.get(`/classes/teacher/${teacherId}/sections`),
 };
 
@@ -172,20 +192,57 @@ export const teacherAPI = {
 
 // Attendance APIs
 export const attendanceAPI = {
-  getRecords: (params?: any) => apiClient.get('/attendance', params),
-  markAttendance: (data: any) => apiClient.post('/attendance', data),
-  getStudentSummary: (studentId: number, params?: any) => apiClient.get(`/attendance/student/${studentId}/summary`, params),
+  // Student attendance
+  getStudentAttendance: (studentId: number, params?: any) => 
+    apiClient.get<PaginatedResponse<any>>(`/attendance/student/${studentId}`, params),
+  getStudentStats: (studentId: number, params: { startDate: string; endDate: string }) => 
+    apiClient.get(`/attendance/stats/${studentId}`, params),
+  
+  // Class attendance
+  getClassAttendance: (classId: number, date: string) => 
+    apiClient.get(`/attendance/class/${classId}/${date}`),
+  markAttendance: (data: any) => apiClient.post('/attendance/mark', data),
+  markBulkAttendance: (data: any) => apiClient.post('/attendance/bulk', data),
+  
+  // Reports and analytics
+  getAttendanceReport: (classId: number, params: { startDate: string; endDate: string }) => 
+    apiClient.get(`/attendance/report/${classId}`, params),
+  getAttendanceTrends: (classId: number, params: { startDate: string; endDate: string }) => 
+    apiClient.get(`/attendance/trends/${classId}`, params),
+  getLowAttendanceStudents: (classId: number, params: { startDate: string; endDate: string; threshold?: number }) => 
+    apiClient.get(`/attendance/low-attendance/${classId}`, params),
+  getMonthlyAttendance: (classId: number, year: number, month: number) => 
+    apiClient.get(`/attendance/monthly/${classId}/${year}/${month}`),
+  
+  // CRUD operations
+  updateAttendance: (id: number, data: any) => apiClient.put(`/attendance/${id}`, data),
+  deleteAttendance: (id: number) => apiClient.delete(`/attendance/${id}`)
 };
 
 // Exam APIs
 export const examAPI = {
+  // Basic CRUD
   getAll: (params?: any) => apiClient.get<PaginatedResponse<any>>('/exams', params),
   getById: (id: number) => apiClient.get(`/exams/${id}`),
   create: (data: any) => apiClient.post('/exams', data),
   update: (id: number, data: any) => apiClient.put(`/exams/${id}`, data),
   delete: (id: number) => apiClient.delete(`/exams/${id}`),
-  getResults: (id: number) => apiClient.get(`/exams/${id}/results`),
-  enterMarks: (data: any) => apiClient.post('/exams/marks', data),
+  
+  // Questions
+  getQuestions: (examId: number) => apiClient.get(`/exams/${examId}/questions`),
+  addQuestion: (examId: number, data: any) => apiClient.post(`/exams/${examId}/questions`, data),
+  updateQuestion: (questionId: number, data: any) => apiClient.put(`/exams/questions/${questionId}`, data),
+  deleteQuestion: (questionId: number) => apiClient.delete(`/exams/questions/${questionId}`),
+  generateQuestionsWithAI: (examId: number, data: any) => apiClient.post(`/exams/${examId}/generate-questions`, data),
+  
+  // Results
+  getResults: (examId: number, params?: any) => apiClient.get(`/exams/${examId}/results`, params),
+  addResult: (data: any) => apiClient.post('/exams/results', data),
+  updateResult: (resultId: number, data: any) => apiClient.put(`/exams/results/${resultId}`, data),
+  
+  // Statistics and analytics
+  getStatistics: (examId: number) => apiClient.get(`/exams/${examId}/statistics`),
+  getUpcomingExams: (classId?: number, limit?: number) => apiClient.get('/exams/upcoming', { classId, limit })
 };
 
 // Fee APIs

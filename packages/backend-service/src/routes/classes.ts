@@ -35,8 +35,9 @@ router.get('/', asyncHandler(async (req, res) => {
 
 // GET /api/classes/:id - Get class by ID with sections
 router.get('/:id', asyncHandler(async (req, res) => {
-  const classId = parseInt(req.params.id);
-  const classData = await classService.getClassById(classId);
+  const classId = req.params.id;
+  const includeSections = req.query.include_sections === 'true';
+  const classData = await classService.getClassById(classId, includeSections);
   
   if (!classData) {
     return res.status(404).json({ error: 'Class not found' });
@@ -53,21 +54,21 @@ router.post('/', validateClass, asyncHandler(async (req, res) => {
 
 // PUT /api/classes/:id - Update class
 router.put('/:id', validateClassUpdate, asyncHandler(async (req, res) => {
-  const classId = parseInt(req.params.id);
+  const classId = req.params.id;
   const classData = await classService.updateClass(classId, req.body);
   res.json(classData);
 }));
 
 // DELETE /api/classes/:id - Delete class
 router.delete('/:id', asyncHandler(async (req, res) => {
-  const classId = parseInt(req.params.id);
+  const classId = req.params.id;
   await classService.deleteClass(classId);
   res.status(204).send();
 }));
 
 // GET /api/classes/:id/statistics - Get class statistics
 router.get('/:id/statistics', asyncHandler(async (req, res) => {
-  const classId = parseInt(req.params.id);
+  const classId = req.params.id;
   const statistics = await classService.getClassStatistics(classId);
   res.json(statistics);
 }));
@@ -108,9 +109,20 @@ router.get('/sections/all', asyncHandler(async (req, res) => {
 
 // GET /api/classes/:classId/sections - Get sections for a specific class
 router.get('/:classId/sections', asyncHandler(async (req, res) => {
-  const classId = parseInt(req.params.classId);
+  const classId = req.params.classId;
   const sections = await classService.getSectionsByClassId(classId);
   res.json(sections);
+}));
+
+// GET /api/classes/:classId/students - Get students for a specific class
+router.get('/:classId/students', asyncHandler(async (req, res) => {
+  const classId = req.params.classId;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 50;
+  const sectionId = req.query.section_id ? parseInt(req.query.section_id as string) : undefined;
+  
+  const students = await classService.getSectionStudents(classId, sectionId, page, limit);
+  res.json({ data: students });
 }));
 
 // GET /api/classes/sections/:sectionId - Get section by ID
@@ -150,7 +162,7 @@ router.get('/sections/:sectionId/students', asyncHandler(async (req, res) => {
   const sectionId = parseInt(req.params.sectionId);
   const { page = 1, limit = 10 } = req.query;
   
-  const result = await classService.getSectionStudents(
+  const result = await classService.getStudentsBySection(
     sectionId,
     parseInt(page as string),
     parseInt(limit as string)
